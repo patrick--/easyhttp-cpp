@@ -36,7 +36,7 @@ public:
 		}
 	}
 
-	void erase(std::string key) {
+	void remove(std::string key) {
 		items_.erase(key);
 	}
 

@@ -71,7 +71,7 @@ TEST_CASE("Getting parameter values from an HttpParameters object ") {
 	}
 }
 
-TEST_CASE("Adding key value pairs to ") {
+TEST_CASE("Adding key value pairs to HttpParameter object") {
 	HttpParameters h;
 
 	SECTION("Adding a single entry to a blank HttpParameters object") {
@@ -88,6 +88,39 @@ TEST_CASE("Adding key value pairs to ") {
 
 	SECTION("Adding an entry with a blank key to a HttpParameters object") {
 		h.add({ "","value1" });
+		REQUIRE(h.size() == 0);
+	}
+}
+
+TEST_CASE("Removing URL parameters from HttpParameters object") {
+
+	HttpParameters h;
+
+	SECTION("Removing a URL parameter that exists") {
+		h.add({ "key1","value1" });
+		REQUIRE(h.get_parameter("key1") == "value1");
+
+		h.remove("key1");
+		REQUIRE(h.get_parameter("key1") == "");
+		REQUIRE(h.size() == 0);
+	}
+	 
+}
+
+TEST_CASE("Removing all parameters") {
+	HttpParameters h = HttpParameters();
+
+	SECTION("Removing all parameters from an HttpParameters object with values") {
+		h.add({ "key1","value1" });
+		h.add({ "key2","value2" });
+		REQUIRE(h.size() == 2);
+
+		h.clear();
+		REQUIRE(h.size() == 0);
+	}
+
+	SECTION("Removing  parameters from an empty HttpParameters object") {
+		h.clear();
 		REQUIRE(h.size() == 0);
 	}
 }
