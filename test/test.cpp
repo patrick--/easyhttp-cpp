@@ -108,7 +108,7 @@ TEST_CASE("HttpParameters encoding") {
 	SECTION("Testing encoding result of populated params") {
 
 		h = HttpParameters({ {"key1","value1"},{"key2","value2"} });
-		REQUIRE(h.encode() == "key1=value1,key2=value2");
+		REQUIRE(h.encode() == "key1=value1&key2=value2");
 	}
 
 }

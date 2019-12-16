@@ -63,7 +63,7 @@ public:
 		str_.clear();
 
 		for (const auto& [k, v] : items_) {
-			str_ += ("," + k + "=" + v);
+			str_ += ("&" + k + "=" + v);
 		}
 		
 		str_.erase(0,1);
