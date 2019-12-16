@@ -7,6 +7,8 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
+include_directories(${PROJECT_SOURCE_DIR}/include)
+
 add_executable(TestAll
   test.cpp
   )
