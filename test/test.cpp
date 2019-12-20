@@ -6,97 +6,97 @@
 using namespace easyhttp;
 
 
-TEST_CASE("Testing HttpParameters basic initialization given <string,string> map") {
+TEST_CASE("Testing Parameters basic initialization given <string,string> map") {
 	std::map<std::string, std::string> temp = { {"key1","value1"} };
 
-	HttpParameters h = HttpParameters(temp);
+	Parameters h = Parameters(temp);
 }
 
-TEST_CASE("Testing HttpParameters returns size") {
+TEST_CASE("Testing Parameters returns size") {
 	std::map<std::string, std::string> temp =
 	{
 		{ "key1","value1" }, {"key2","value2"},
 		{"key3","value3"}, {"key4","value4"}
 	};
 
-	HttpParameters h;
+	Parameters h;
 
-	SECTION("Checking that an empty HttpParameters objects returns 0") {
+	SECTION("Checking that an empty Parameters objects returns 0") {
 		REQUIRE(h.size() == 0);
 	}
 
-	SECTION("Checking  that an HttpParamaters objects given a map with 4 entries returns 4 ") {
-		h = HttpParameters(temp);
+	SECTION("Checking  that an Parameters objects given a map with 4 entries returns 4 ") {
+		h = Parameters(temp);
 		REQUIRE(h.size() == 4);
 	}
 }
 
 
-TEST_CASE("Testing HttpParameters constructing with initilization lists") {
-	HttpParameters h;
+TEST_CASE("Testing Parameters constructing with initilization lists") {
+	Parameters h;
 
-	SECTION("Initilizing an empty HttpParameter") {
+	SECTION("Initilizing an empty Parameters") {
 		REQUIRE(h.size() == 0);
 	}
 
-	SECTION("Initilaizing an HttpParameter with a single key value entry") {
-		h = HttpParameters({ {"key2","value2"} });
+	SECTION("Initilaizing an Parameters with a single key value entry") {
+		h = Parameters({ {"key2","value2"} });
 		REQUIRE(h.size() == 1);
 	}
 
-	SECTION("Initializing an HttpParameter with a map of key value pairs as initilizer list") {
-		h = HttpParameters({ {"key1","value1"}, {"key2","value2"} });
+	SECTION("Initializing an Parameters with a map of key value pairs as initilizer list") {
+		h = Parameters({ {"key1","value1"}, {"key2","value2"} });
 		REQUIRE(h.size() == 2);
 	}
 
-	SECTION("Initializing an HttpParameter with a invalid key but valid value") {
-		h = HttpParameters({ {"","value1"} });
+	SECTION("Initializing an Parameters with a invalid key but valid value") {
+		h = Parameters({ {"","value1"} });
 		REQUIRE(h.size() == 0);
 	}
 
-	SECTION("Initializing an HttpParameter with a valid key but invalid value") {
-		h = HttpParameters({ {"key1",""} });
+	SECTION("Initializing an Parameters with a valid key but invalid value") {
+		h = Parameters({ {"key1",""} });
 		REQUIRE(h.size() == 1);
 	}
 }
 
-TEST_CASE("Getting parameter values from an HttpParameters object ") {
-	HttpParameters h;
+TEST_CASE("Getting parameter values from an Parameters object ") {
+	Parameters h;
 
 	SECTION("Attempting to get a parameter that doesn't exist") {
 		REQUIRE(h.get_parameter("doesntexist") == "");
 	}
 
 	SECTION("Attempting to get a parameter that exists") {
-		h = HttpParameters(std::map<std::string, std::string>{ {"key1", "value1"} });
+		h = Parameters(std::map<std::string, std::string>{ {"key1", "value1"} });
 		REQUIRE(h.get_parameter("key1") == "value1");
 	}
 }
 
-TEST_CASE("Adding key value pairs to HttpParameter object") {
-	HttpParameters h;
+TEST_CASE("Adding key value pairs to Parameters object") {
+	Parameters h;
 
-	SECTION("Adding a single entry to a blank HttpParameters object") {
+	SECTION("Adding a single entry to a blank Parameters object") {
 		h.add({ "key1","value1" });
 		REQUIRE(h.size() == 1);
 	}
 
-	SECTION("Adding a duplicate entry to a blank HttpParameters object") {
+	SECTION("Adding a duplicate entry to a blank Parameters object") {
 		h.add({ "key1","value1" });
 		h.add({ "key1","value2" });
 		REQUIRE(h.size() == 1);
 		REQUIRE(h.get_parameter("key1") == "value2");
 	}
 
-	SECTION("Adding an entry with a blank key to a HttpParameters object") {
+	SECTION("Adding an entry with a blank key to a Parameters object") {
 		h.add({ "","value1" });
 		REQUIRE(h.size() == 0);
 	}
 }
 
-TEST_CASE("Removing URL parameters from HttpParameters object") {
+TEST_CASE("Removing URL parameters from Parameters object") {
 
-	HttpParameters h;
+	Parameters h;
 
 	SECTION("Removing a URL parameter that exists") {
 		h.add({ "key1","value1" });
@@ -110,9 +110,9 @@ TEST_CASE("Removing URL parameters from HttpParameters object") {
 }
 
 TEST_CASE("Removing all parameters") {
-	HttpParameters h = HttpParameters();
+	Parameters h = Parameters();
 
-	SECTION("Removing all parameters from an HttpParameters object with values") {
+	SECTION("Removing all parameters from an Parameters object with values") {
 		h.add({ "key1","value1" });
 		h.add({ "key2","value2" });
 		REQUIRE(h.size() == 2);
@@ -121,16 +121,16 @@ TEST_CASE("Removing all parameters") {
 		REQUIRE(h.size() == 0);
 	}
 
-	SECTION("Removing  parameters from an empty HttpParameters object") {
+	SECTION("Removing  parameters from an empty Parameters object") {
 		h.clear();
 		REQUIRE(h.size() == 0);
 	}
 }
 
-TEST_CASE("HttpParameters encoding") {
+TEST_CASE("UrlParameters encoding") {
 	INFO("Testing different ways of encoding parameters");
 
-	HttpParameters h = HttpParameters();
+	UrlParameters h = UrlParameters();
 
 	std::map<std::string, std::string> temp_map = std::map<std::string, std::string>{ {"key1", "value1"}, { "key2","value2" } };
 
@@ -142,7 +142,7 @@ TEST_CASE("HttpParameters encoding") {
 
 	SECTION("Testing encoding result of populated params") {
 
-		h = HttpParameters({ {"key1","value1"},{"key2","value2"} });
+		h = UrlParameters({ {"key1","value1"},{"key2","value2"} });
 		REQUIRE(h.encode() == "key1=value1&key2=value2");
 	}
 

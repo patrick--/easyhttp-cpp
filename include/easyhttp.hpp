@@ -69,6 +69,17 @@ namespace easyhttp {
 
 
 	class UrlParameters : public Parameters {
+	public:
+		UrlParameters() : Parameters() {}
+
+		UrlParameters(std::initializer_list<std::pair<std::string, std::string>> list)
+			: Parameters(list) {}
+
+		UrlParameters(std::pair<std::string, std::string>& x)
+			: Parameters(x) {}
+
+		UrlParameters(std::map<std::string, std::string> x)
+			: Parameters(x) {}
 
 		std::string get_encoded() {
 			if (str_.empty()) {
@@ -93,6 +104,21 @@ namespace easyhttp {
 		std::string str_;
 
 		
+	};
+
+	class Headers : public Parameters {
+	public:
+		Headers() : Parameters() {}
+
+		Headers(std::initializer_list<std::pair<std::string, std::string>> list)
+			: Parameters(list) {}
+
+		Headers(std::pair<std::string, std::string>& x)
+			: Parameters(x) {}
+
+		Headers(std::map<std::string, std::string> x)
+			: Parameters(x) {}
+
 	};
 
 	class Request {
