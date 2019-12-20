@@ -7,10 +7,13 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
+find_package(CURL REQUIRED)
+find_package(ZLIB REQUIRED)
+include_directories(${PROJECT_SOURCE_DIR}/include  ${CURL_INCLUDE_DIRS})
+message("curl directories: " ${CURL_INCLUDE_DIRS})
 
 add_executable(TestAll
   test.cpp
   )
 
-target_link_libraries(TestAll Catch2::Catch2)
+target_link_libraries(TestAll Catch2::Catch2 ZLIB::ZLIB ${CURL_LIBRARIES})

@@ -146,4 +146,10 @@ TEST_CASE("UrlParameters encoding") {
 		REQUIRE(h.encode() == "key1=value1&key2=value2");
 	}
 
+	SECTION("Testing encoding result of populated params that need escaping") {
+
+		h = UrlParameters({ {"key 1","value 1"},{"key 2","value 2"} });
+		REQUIRE(h.encode() == "key%201=value%201&key%202=value%202");
+	}
+
 }

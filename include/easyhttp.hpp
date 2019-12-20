@@ -2,6 +2,7 @@
 
 #include <map>
 #include <iterator> 
+#include <curl/curl.h>
 
 
 namespace easyhttp {
@@ -81,29 +82,53 @@ namespace easyhttp {
 		UrlParameters(std::map<std::string, std::string> x)
 			: Parameters(x) {}
 
-		std::string get_encoded() {
+
+		std::string get_string() {
 			if (str_.empty()) {
+				encode();
+				return str_;
+			}
+
+			return str_;
+		}
+		std::string get_encoded_string() {
+			if (encoded_str_.empty()) {
 				return encode();
 			}
-			return str_;
+
+			return encoded_str_;
 		}
 
 		std::string encode() {
 			str_.clear();
 
-			for (const auto& [k, v] : items_) {
+			for (auto& [k, v] : items_) {
 				str_ += ("&" + k + "=" + v);
+				encoded_str_ += ("&" + url_escape_str(std::string(k)) + "=" + url_escape_str(std::string(v)));
 			}
 
 			str_.erase(0, 1);
+			encoded_str_.erase(0, 1);
 
-			return str_;
+			return encoded_str_;
 		}
 
 	private:
-		std::string str_;
+	
+		std::string url_escape_str(std::string& orig) {
 
-		
+			// Think about a possible try catch here
+			// Technically, std::strings ctor can throw
+			char *res = curl_easy_escape(nullptr, orig.c_str(), orig.length());
+
+			std::string escaped_str = std::string(res);
+			curl_free(res);
+			return escaped_str;
+		}
+
+		std::string str_;
+		std::string encoded_str_;
+
 	};
 
 	class Headers : public Parameters {
@@ -123,11 +148,7 @@ namespace easyhttp {
 
 	class Request {
 
-		
-
-
-
-
+	
 	private:
 		std::string url_;
 		Parameters& params_;
