@@ -4,78 +4,109 @@
 #include <iterator> 
 
 
-struct HttpResponse {
-	std::string response_code;
-	std::string content; 
-};
+namespace easyhttp {
 
 
-class HttpParameters {
+	enum class RequestError {none, timeout, socket_error};
+	
 
-public:
-	HttpParameters() {}
+	struct BasicAuthentication {
+		std::string username;
+		std::string password;
+	};
 
-	HttpParameters(std::initializer_list<std::pair<std::string, std::string>> list) {
-		for (auto itr = list.begin(); itr != list.end(); itr++) {
-			if (!itr->first.empty()) {
-				items_[itr->first] = itr->second;
+	struct HttpResponse {
+		std::string response_code;
+		std::string content;
+	};
+
+
+	class Parameters {
+
+	public:
+		Parameters() {}
+
+		Parameters(std::initializer_list<std::pair<std::string, std::string>> list) {
+			for (auto itr = list.begin(); itr != list.end(); itr++) {
+				if (!itr->first.empty()) {
+					items_[itr->first] = itr->second;
+				}
 			}
 		}
-	}
-	
 
-	HttpParameters(std::pair<std::string, std::string> &x) {
-		items_[x.first] = x.second;
-	}
 
-	HttpParameters(std::map<std::string, std::string> x) : items_{ x } {}
-
-	void add(std::pair<std::string, std::string> p) {
-		if (!p.first.empty()) {
-			items_[p.first] = p.second;
+		Parameters(std::pair<std::string, std::string>& x) {
+			items_[x.first] = x.second;
 		}
-	}
 
-	void remove(std::string key) {
-		items_.erase(key);
-	}
+		Parameters(std::map<std::string, std::string> x) : items_{ x } {}
 
-	size_t size() { 
-		return items_.size();
-	}
-
-	std::string get_parameter(std::string key) {
-		return (items_.find(key) == items_.end()) ? "" : items_[key];
-	}
-
-	void clear() {
-		items_.clear();
-	}
-
-	std::string get_encoded() {
-		if (str_.empty()) {
-			return encode();
+		void add(std::pair<std::string, std::string> p) {
+			if (!p.first.empty()) {
+				items_[p.first] = p.second;
+			}
 		}
-		return str_;
-	}
 
-	std::string encode() {
-		str_.clear();
-
-		for (const auto& [k, v] : items_) {
-			str_ += ("&" + k + "=" + v);
+		void remove(std::string key) {
+			items_.erase(key);
 		}
+
+		size_t size() {
+			return items_.size();
+		}
+
+		std::string get_parameter(std::string key) {
+			return (items_.find(key) == items_.end()) ? "" : items_[key];
+		}
+
+		void clear() {
+			items_.clear();
+		}
+
+	protected:
+		std::map<std::string, std::string> items_;
+	};
+
+
+	class UrlParameters : public Parameters {
+
+		std::string get_encoded() {
+			if (str_.empty()) {
+				return encode();
+			}
+			return str_;
+		}
+
+		std::string encode() {
+			str_.clear();
+
+			for (const auto& [k, v] : items_) {
+				str_ += ("&" + k + "=" + v);
+			}
+
+			str_.erase(0, 1);
+
+			return str_;
+		}
+
+	private:
+		std::string str_;
+
 		
-		str_.erase(0,1);
+	};
 
-		return str_;
-	}
+	class Request {
+
+		
 
 
-private: 
-	std::map<std::string, std::string> items_;
-	std::string str_;
 
-	
 
-};
+	private:
+		std::string url_;
+		Parameters& params_;
+
+
+	};
+
+}

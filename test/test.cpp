@@ -3,6 +3,8 @@
 #include <catch2/catch.hpp>
 #include "easyhttp.hpp"
 
+using namespace easyhttp;
+
 
 TEST_CASE("Testing HttpParameters basic initialization given <string,string> map") {
 	std::map<std::string, std::string> temp = { {"key1","value1"} };
