@@ -31,7 +31,7 @@ namespace easyhttp {
 	public:
 		Parameters() {}
 
-		Parameters(std::initializer_list<std::pair<std::string, std::string>> list) {
+		explicit Parameters(std::initializer_list<std::pair<std::string, std::string>> list) {
 			for (auto itr = list.begin(); itr != list.end(); itr++) {
 				if (!itr->first.empty()) {
 					items_[itr->first] = itr->second;
@@ -40,13 +40,13 @@ namespace easyhttp {
 		}
 
 
-		Parameters(std::pair<std::string, std::string>& x) {
+		explicit Parameters(const std::pair<std::string, std::string>& x) {
 			items_[x.first] = x.second;
 		}
 
-		Parameters(std::map<std::string, std::string> x) : items_{ x } {}
+		explicit Parameters(const std::map<std::string, std::string>& x) : items_{ x } {}
 
-		void add(std::pair<std::string, std::string> p) {
+		void add(const std::pair<std::string, std::string>& p) {
 			if (!p.first.empty()) {
 				items_[p.first] = p.second;
 			}
@@ -77,13 +77,13 @@ namespace easyhttp {
 	public:
 		UrlParameters() : Parameters() {}
 
-		UrlParameters(std::initializer_list<std::pair<std::string, std::string>> list)
+		explicit UrlParameters(std::initializer_list<std::pair<std::string, std::string>> list)
 			: Parameters(list) {}
 
-		UrlParameters(std::pair<std::string, std::string>& x)
+		explicit UrlParameters(const std::pair<std::string, std::string>& x)
 			: Parameters(x) {}
 
-		UrlParameters(std::map<std::string, std::string> x)
+		explicit UrlParameters(const std::map<std::string, std::string>& x)
 			: Parameters(x) {}
 
 
@@ -144,13 +144,13 @@ namespace easyhttp {
 	public:
 		Headers() : Parameters() {}
 
-		Headers(std::initializer_list<std::pair<std::string, std::string>> list)
+		explicit Headers(std::initializer_list<std::pair<std::string, std::string>> list)
 			: Parameters(list) {}
 
-		Headers(std::pair<std::string, std::string>& x)
+		explicit Headers(const std::pair<std::string, std::string>& x)
 			: Parameters(x) {}
 
-		Headers(std::map<std::string, std::string> x)
+		explicit Headers(const std::map<std::string, std::string>& x)
 			: Parameters(x) {}
 
 	};
@@ -188,7 +188,7 @@ namespace easyhttp {
 		}
 
 	private:
-		HttpResponse http_request_impl(HttpRequestType r, RequestConfig& c) {
+		HttpResponse http_request_impl(const HttpRequestType r, RequestConfig& c) {
 
 			CURL* curl;
 			curl_global_init(CURL_GLOBAL_ALL);
