@@ -153,3 +153,29 @@ TEST_CASE("UrlParameters encoding") {
 	}
 
 }
+
+TEST_CASE("Making requests") {
+
+	UrlParameters p = UrlParameters();
+	Headers h = Headers();
+	BasicAuthentication a = BasicAuthentication();
+	Request b = Request();
+	RequestConfig r = { "http://postman-echo.com/post", UrlParameters({{"foo","bar"}}),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+
+
+	SECTION("Testing post request") {
+		HttpResponse resp = b.post(r);
+
+		REQUIRE(resp.response_code == "200");
+	}
+
+	SECTION("Testing get request") {
+		HttpResponse resp = b.get(r);
+
+		REQUIRE(resp.response_code == "200");
+	}
+
+	
+
+
+}
