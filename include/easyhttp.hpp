@@ -172,7 +172,6 @@ namespace easyhttp {
 			ss->write(ptr, response_size);
 			return response_size;
 		}
-
 	}
 
 	class Request {
@@ -203,7 +202,7 @@ namespace easyhttp {
 			}
 
 			curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, static_cast<long>(c.timeout_sec.count()));
-			curl_easy_setopt(curl, CURLOPT_URL, c.url.c_str());
+			curl_easy_setopt(curl, CURLOPT_URL, (c.url + c.params.get_encoded_string()).c_str());
 
 			if (c.params.size() > 0) {
 				std::string temp = c.params.get_encoded_string();
