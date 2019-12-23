@@ -236,13 +236,13 @@ namespace easyhttp {
 			else if (res == CURLE_OPERATION_TIMEDOUT) {
 				resp.content = "Operation Timed out.";
 				resp.error = RequestError::timeout;
-				resp.response_code = -1;
+				resp.response_code = "-1";
 			}
 
 			else {
 				resp.content = "Request encountered error: " + std::string(curl_easy_strerror(res));
 				resp.error = RequestError::error_misc;
-				resp.response_code = -1;
+				resp.response_code = "-1";
 			}
 			
 			std::cout << resp.content << "\n";
