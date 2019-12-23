@@ -23,9 +23,6 @@ namespace easyhttp {
 		std::string content;
 	};
 
-	
-
-
 	class Parameters {
 
 	public:
@@ -110,14 +107,18 @@ namespace easyhttp {
 			}
 
 			str_.clear();
+			encoded_str_.clear();
+
+			str_ = "?";
+			encoded_str_ = "?";
 
 			for (auto& [k, v] : items_) {
 				str_ += ("&" + k + "=" + v);
 				encoded_str_ += ("&" + url_escape_str(std::string(k)) + "=" + url_escape_str(std::string(v)));
 			}
 
-			str_.erase(0, 1);
-			encoded_str_.erase(0, 1);
+			str_.erase(1, 1);
+			encoded_str_.erase(1, 1);
 
 			return encoded_str_;
 		}
@@ -244,8 +245,8 @@ namespace easyhttp {
 				resp.error = RequestError::error_misc;
 				resp.response_code = -1;
 			}
-
-
+			
+			std::cout << resp.content << "\n";
 			return resp;
 			
 		}

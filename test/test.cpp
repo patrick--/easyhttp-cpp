@@ -143,13 +143,13 @@ TEST_CASE("UrlParameters encoding") {
 	SECTION("Testing encoding result of populated params") {
 
 		h = UrlParameters({ {"key1","value1"},{"key2","value2"} });
-		REQUIRE(h.encode() == "key1=value1&key2=value2");
+		REQUIRE(h.encode() == "?key1=value1&key2=value2");
 	}
 
 	SECTION("Testing encoding result of populated params that need escaping") {
 
 		h = UrlParameters({ {"key 1","value 1"},{"key 2","value 2"} });
-		REQUIRE(h.encode() == "key%201=value%201&key%202=value%202");
+		REQUIRE(h.encode() == "?key%201=value%201&key%202=value%202");
 	}
 
 }
@@ -160,7 +160,7 @@ TEST_CASE("Making requests") {
 	Headers h = Headers();
 	BasicAuthentication a = BasicAuthentication();
 	Request b = Request();
-	RequestConfig r = { "http://postman-echo.com/post", UrlParameters({{"foo","bar"}}),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+	RequestConfig r = { "http://postman-echo.com/post", UrlParameters({{"foo","bar"}}),Headers({{"foo","bar"}}), BasicAuthentication(),  std::chrono::seconds(1) };
 
 
 	SECTION("Testing post request") {
