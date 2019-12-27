@@ -5,7 +5,6 @@
 
 using namespace easyhttp;
 
-
 TEST_CASE("Testing Parameters basic initialization given <string,string> map") {
 	std::map<std::string, std::string> temp = { {"key1","value1"} };
 
@@ -154,28 +153,73 @@ TEST_CASE("UrlParameters encoding") {
 
 }
 
-TEST_CASE("Making requests") {
+TEST_CASE("Making HTTP requests") {
 
 	UrlParameters p = UrlParameters();
 	Headers h = Headers();
 	BasicAuthentication a = BasicAuthentication();
 	Request b = Request();
-	RequestConfig r = { "http://postman-echo.com/post", UrlParameters({{"foo","bar"}}),Headers({{"foo","bar"}}), BasicAuthentication(),  std::chrono::seconds(1) };
 
 
-	SECTION("Testing post request") {
+	SECTION("Testing basic POST request") {
+		RequestConfig r = { "http://postman-echo.com/post", UrlParameters(),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
 		HttpResponse resp = b.post(r);
 
 		REQUIRE(resp.response_code == "200");
 	}
 
-	SECTION("Testing get request") {
+	SECTION("Testing basic GET request") {
+		RequestConfig r = { "http://postman-echo.com/get", UrlParameters(),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+		HttpResponse resp = b.get(r);
+		
+		REQUIRE(resp.response_code == "200");
+	}
+
+	SECTION("Testing POST request with URL parameters") {
+		RequestConfig r = { "http://postman-echo.com/post", UrlParameters({{"foo","bar"}}),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+		HttpResponse resp = b.post(r);
+
+		REQUIRE(resp.response_code == "200");
+	}
+
+	SECTION("Testing GET request with URL parameters") {
+		RequestConfig r = { "http://postman-echo.com/get", UrlParameters({{"foo","bar"}}),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
 		HttpResponse resp = b.get(r);
 
 		REQUIRE(resp.response_code == "200");
 	}
 
-	
+	SECTION("Testing GET request that returns 404") {
+		RequestConfig r = { "http://postman-echo.com/doesntexist", UrlParameters({{}}),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+		HttpResponse resp = b.get(r);
 
+		REQUIRE(resp.response_code == "404");
+	}
 
+	SECTION("Testing POST request that returns 404") {
+		RequestConfig r = { "http://postman-echo.com/doesntexist", UrlParameters({{}}),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+		HttpResponse resp = b.post(r);
+
+		REQUIRE(resp.response_code == "404");
+	}
+
+	SECTION("Testing GET request that times out") {
+		RequestConfig r = { "http://google.com:8181", UrlParameters({{}}),Headers(), BasicAuthentication(),  std::chrono::seconds(2) };
+		HttpResponse resp = b.get(r);
+
+		REQUIRE(resp.error == RequestError::timeout);
+		REQUIRE(resp.content == "Operation timed out.");
+		REQUIRE(resp.response_code == "-1");
+
+	}
+
+	SECTION("Testing POST request that times out") {
+		RequestConfig r = { "http://google.com:8181", UrlParameters({{}}),Headers(), BasicAuthentication(),  std::chrono::seconds(2) };
+		HttpResponse resp = b.post(r);
+
+		REQUIRE(resp.error == RequestError::timeout);
+		REQUIRE(resp.content == "Operation timed out.");
+		REQUIRE(resp.response_code == "-1");
+
+	}
 }

@@ -6,7 +6,6 @@
 #include <sstream>
 #include <chrono>
 
-
 namespace easyhttp {
 
 	enum class HttpRequestType { get, post };
@@ -35,7 +34,6 @@ namespace easyhttp {
 				}
 			}
 		}
-
 
 		explicit Parameters(const std::pair<std::string, std::string>& x) {
 			items_[x.first] = x.second;
@@ -72,6 +70,7 @@ namespace easyhttp {
 
 	class UrlParameters : public Parameters {
 	public:
+
 		UrlParameters() : Parameters() {}
 
 		explicit UrlParameters(std::initializer_list<std::pair<std::string, std::string>> list)
@@ -82,7 +81,6 @@ namespace easyhttp {
 
 		explicit UrlParameters(const std::map<std::string, std::string>& x)
 			: Parameters(x) {}
-
 
 		std::string get_string() {
 			if (str_.empty()) {
@@ -143,6 +141,7 @@ namespace easyhttp {
 
 	class Headers : public Parameters {
 	public:
+
 		Headers() : Parameters() {}
 
 		explicit Headers(std::initializer_list<std::pair<std::string, std::string>> list)
@@ -188,6 +187,7 @@ namespace easyhttp {
 		}
 
 	private:
+
 		HttpResponse http_request_impl(const HttpRequestType r, RequestConfig& c) {
 
 			CURL* curl;
@@ -199,19 +199,19 @@ namespace easyhttp {
 
 			if (r == HttpRequestType::post) {
 				curl_easy_setopt(curl, CURLOPT_POST, 1);
+
+				if (c.params.size() > 0) {
+					std::string temp = c.params.get_encoded_string();
+					curl_easy_setopt(curl, CURLOPT_POSTFIELDS, temp.c_str());
+				}
+
+				else {
+					curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "");
+				}
 			}
 
 			curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, static_cast<long>(c.timeout_sec.count()));
 			curl_easy_setopt(curl, CURLOPT_URL, (c.url + c.params.get_encoded_string()).c_str());
-
-			if (c.params.size() > 0) {
-				std::string temp = c.params.get_encoded_string();
-				curl_easy_setopt(curl, CURLOPT_POSTFIELDS, temp.c_str());
-			}
-
-			else {
-				curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "");
-			}
 
 			if (!c.auth.username.empty() && !c.auth.password.empty()) {
 				curl_easy_setopt(curl, CURLOPT_USERNAME, c.auth.username.c_str());
@@ -234,7 +234,7 @@ namespace easyhttp {
 			}
 
 			else if (res == CURLE_OPERATION_TIMEDOUT) {
-				resp.content = "Operation Timed out.";
+				resp.content = "Operation timed out.";
 				resp.error = RequestError::timeout;
 				resp.response_code = "-1";
 			}
@@ -245,7 +245,6 @@ namespace easyhttp {
 				resp.response_code = "-1";
 			}
 			
-			std::cout << resp.content << "\n";
 			return resp;
 			
 		}
