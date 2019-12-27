@@ -63,12 +63,12 @@ TEST_CASE("Getting parameter values from an Parameters object ") {
 	Parameters h;
 
 	SECTION("Attempting to get a parameter that doesn't exist") {
-		REQUIRE(h.get_parameter("doesntexist") == "");
+		REQUIRE(h.get_value("doesntexist") == "");
 	}
 
 	SECTION("Attempting to get a parameter that exists") {
 		h = Parameters(std::map<std::string, std::string>{ {"key1", "value1"} });
-		REQUIRE(h.get_parameter("key1") == "value1");
+		REQUIRE(h.get_value("key1") == "value1");
 	}
 }
 
@@ -84,7 +84,7 @@ TEST_CASE("Adding key value pairs to Parameters object") {
 		h.add({ "key1","value1" });
 		h.add({ "key1","value2" });
 		REQUIRE(h.size() == 1);
-		REQUIRE(h.get_parameter("key1") == "value2");
+		REQUIRE(h.get_value("key1") == "value2");
 	}
 
 	SECTION("Adding an entry with a blank key to a Parameters object") {
@@ -99,10 +99,10 @@ TEST_CASE("Removing URL parameters from Parameters object") {
 
 	SECTION("Removing a URL parameter that exists") {
 		h.add({ "key1","value1" });
-		REQUIRE(h.get_parameter("key1") == "value1");
+		REQUIRE(h.get_value("key1") == "value1");
 
 		h.remove("key1");
-		REQUIRE(h.get_parameter("key1") == "");
+		REQUIRE(h.get_value("key1") == "");
 		REQUIRE(h.size() == 0);
 	}
 	 
@@ -149,6 +149,29 @@ TEST_CASE("UrlParameters encoding") {
 
 		h = UrlParameters({ {"key 1","value 1"},{"key 2","value 2"} });
 		REQUIRE(h.encode() == "?key%201=value%201&key%202=value%202");
+	}
+
+}
+
+TEST_CASE("Testing headers") {
+
+	UrlParameters p = UrlParameters();
+	Headers h = Headers();
+	BasicAuthentication a = BasicAuthentication();
+	Request b = Request();
+
+	SECTION("Adding headers to Headers struct") {
+		
+		h.add({ "key1", "value1" });
+		REQUIRE(h.get_value("key1") == "value1");
+	}
+
+	SECTION("Making POST request with custom headers") {
+		h.add({ "key1", "value1" });
+		RequestConfig r = { "http://postman-echo.com/post?val=1", UrlParameters(),h , BasicAuthentication(),  std::chrono::seconds(1) };
+		HttpResponse resp = b.post(r);
+
+		REQUIRE(resp.response_code == "200");
 	}
 
 }

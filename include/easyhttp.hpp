@@ -55,7 +55,7 @@ namespace easyhttp {
 			return items_.size();
 		}
 
-		std::string get_parameter(std::string key) {
+		std::string get_value(std::string key) {
 			return (items_.find(key) == items_.end()) ? "" : items_[key];
 		}
 
@@ -197,6 +197,13 @@ namespace easyhttp {
 			std::stringstream response_stream;
 			HttpResponse resp;
 
+			curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, static_cast<long>(c.timeout_sec.count()));
+			curl_easy_setopt(curl, CURLOPT_URL, (c.url + c.params.get_encoded_string()).c_str());
+
+			if (c.headers.size() > 0) {
+				//struct curl_slist* chunk = NULL;
+			}
+
 			if (r == HttpRequestType::post) {
 				curl_easy_setopt(curl, CURLOPT_POST, 1);
 
@@ -209,9 +216,6 @@ namespace easyhttp {
 					curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "");
 				}
 			}
-
-			curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, static_cast<long>(c.timeout_sec.count()));
-			curl_easy_setopt(curl, CURLOPT_URL, (c.url + c.params.get_encoded_string()).c_str());
 
 			if (!c.auth.username.empty() && !c.auth.password.empty()) {
 				curl_easy_setopt(curl, CURLOPT_USERNAME, c.auth.username.c_str());
@@ -245,6 +249,7 @@ namespace easyhttp {
 				resp.response_code = "-1";
 			}
 			
+			std::cout << "URL: " << c.url << " content: " << resp.content << "\n";
 			return resp;
 			
 		}
