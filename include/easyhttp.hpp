@@ -270,7 +270,6 @@ namespace easyhttp {
 				resp.response_code = "-1";
 			}
 			
-			std::cout << "URL: " << c.url << " content: " << resp.content << "\n";
 			return resp;
 			
 		}

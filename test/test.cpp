@@ -98,7 +98,6 @@ TEST_CASE("Adding key value pairs to Parameters object") {
 }
 
 TEST_CASE("Removing URL parameters from Parameters object") {
-
 	Parameters h;
 
 	SECTION("Removing a URL parameter that exists") {
@@ -184,7 +183,6 @@ TEST_CASE("Testing headers") {
 		REQUIRE(str_in_response(resp.content, "key1") == true);
 		REQUIRE(str_in_response(resp.content, "value1") == true);
 	}
-
 }
 
 TEST_CASE("Making HTTP requests") {
@@ -199,7 +197,6 @@ TEST_CASE("Making HTTP requests") {
 		HttpResponse resp = b.post(r);
 
 		REQUIRE(resp.response_code == "200");
-
 	}
 
 	SECTION("Testing basic GET request") {
@@ -244,7 +241,6 @@ TEST_CASE("Making HTTP requests") {
 		REQUIRE(resp.error == RequestError::timeout);
 		REQUIRE(resp.content == "Operation timed out.");
 		REQUIRE(resp.response_code == "-1");
-
 	}
 
 	SECTION("Testing POST request that times out") {
@@ -254,6 +250,5 @@ TEST_CASE("Making HTTP requests") {
 		REQUIRE(resp.error == RequestError::timeout);
 		REQUIRE(resp.content == "Operation timed out.");
 		REQUIRE(resp.response_code == "-1");
-
 	}
 }
