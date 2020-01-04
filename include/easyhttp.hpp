@@ -25,6 +25,9 @@ namespace easyhttp {
 	class Parameters {
 
 	public:
+		
+		using iterator = std::map<std::string, std::string>::iterator;
+
 		Parameters() {}
 
 		explicit Parameters(const std::initializer_list<std::pair<std::string, std::string>>& list) {
@@ -61,6 +64,14 @@ namespace easyhttp {
 
 		void clear() {
 			items_.clear();
+		}
+
+		std::map<std::string, std::string>::iterator begin() {
+			return items_.begin();
+		}
+
+		std::map<std::string, std::string>::iterator end() {
+			return items_.end();
 		}
 
 	protected:
@@ -153,6 +164,10 @@ namespace easyhttp {
 		explicit Headers(const std::map<std::string, std::string>& x)
 			: Parameters(x) {}
 
+		std::string encode(const std::string key) {
+			return (items_.find(key) == items_.end()) ? "" : key + ": " + items_[key];
+		}
+
 	};
 
 	struct RequestConfig {
@@ -191,6 +206,7 @@ namespace easyhttp {
 		HttpResponse http_request_impl(const HttpRequestType r, RequestConfig& c) {
 
 			CURL* curl;
+			struct curl_slist* chunk = NULL;
 			curl_global_init(CURL_GLOBAL_ALL);
 			curl = curl_easy_init();
 
@@ -201,7 +217,11 @@ namespace easyhttp {
 			curl_easy_setopt(curl, CURLOPT_URL, (c.url + c.params.get_encoded_string()).c_str());
 
 			if (c.headers.size() > 0) {
-				//struct curl_slist* chunk = NULL;
+				for (const auto& [k,v] : c.headers) {
+					chunk = curl_slist_append(chunk, c.headers.encode(k).c_str());
+				}
+
+				curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
 			}
 
 			if (r == HttpRequestType::post) {
@@ -230,6 +250,7 @@ namespace easyhttp {
 			auto http_code = 0L;
 			curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
 			curl_easy_cleanup(curl);
+			curl_slist_free_all(chunk);
 
 			if (res == CURLE_OK) {
 				resp.content = response_stream.str();

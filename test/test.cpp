@@ -5,6 +5,10 @@
 
 using namespace easyhttp;
 
+bool str_in_response(const std::string& res, const std::string& str) {
+	return (res.find(str) != std::string::npos);
+}
+
 TEST_CASE("Testing Parameters basic initialization given <string,string> map") {
 	std::map<std::string, std::string> temp = { {"key1","value1"} };
 
@@ -166,12 +170,19 @@ TEST_CASE("Testing headers") {
 		REQUIRE(h.get_value("key1") == "value1");
 	}
 
+	SECTION("Encoding headers") {
+		h.add({ "key1", "value1" });
+		REQUIRE(h.encode("key1") == "key1: value1");
+	}
+
 	SECTION("Making POST request with custom headers") {
 		h.add({ "key1", "value1" });
 		RequestConfig r = { "http://postman-echo.com/post?val=1", UrlParameters(),h , BasicAuthentication(),  std::chrono::seconds(1) };
 		HttpResponse resp = b.post(r);
-
+	
 		REQUIRE(resp.response_code == "200");
+		REQUIRE(str_in_response(resp.content, "key1") == true);
+		REQUIRE(str_in_response(resp.content, "value1") == true);
 	}
 
 }
@@ -183,12 +194,12 @@ TEST_CASE("Making HTTP requests") {
 	BasicAuthentication a = BasicAuthentication();
 	Request b = Request();
 
-
 	SECTION("Testing basic POST request") {
 		RequestConfig r = { "http://postman-echo.com/post", UrlParameters(),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
 		HttpResponse resp = b.post(r);
 
 		REQUIRE(resp.response_code == "200");
+
 	}
 
 	SECTION("Testing basic GET request") {
