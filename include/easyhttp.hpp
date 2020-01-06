@@ -25,12 +25,9 @@ namespace easyhttp {
 	class Parameters {
 
 	public:
-		
-		using iterator = std::map<std::string, std::string>::iterator;
-
 		Parameters() {}
 
-		explicit Parameters(const std::initializer_list<std::pair<std::string, std::string>>& list) {
+		Parameters(const std::initializer_list<std::pair<std::string, std::string>>& list) {
 			for (auto itr = list.begin(); itr != list.end(); itr++) {
 				if (!itr->first.empty()) {
 					items_[itr->first] = itr->second;
@@ -38,11 +35,11 @@ namespace easyhttp {
 			}
 		}
 
-		explicit Parameters(const std::pair<std::string, std::string>& x) {
+		Parameters(const std::pair<std::string, std::string>& x) {
 			items_[x.first] = x.second;
 		}
 
-		explicit Parameters(const std::map<std::string, std::string> x) : items_{ x } {}
+		Parameters(const std::map<std::string, std::string> x) : items_{ x } {}
 
 		void add(std::pair<std::string, std::string> p) {
 			if (!p.first.empty()) {
@@ -81,17 +78,14 @@ namespace easyhttp {
 
 	class UrlParameters : public Parameters {
 	public:
-
+		
 		UrlParameters() : Parameters() {}
 
-		explicit UrlParameters(std::initializer_list<std::pair<std::string, std::string>> list)
-			: Parameters(list) {}
+		UrlParameters(std::initializer_list<std::pair<std::string, std::string>> list): Parameters(list) {}
 
-		explicit UrlParameters(const std::pair<std::string, std::string>& x)
-			: Parameters(x) {}
+		UrlParameters(const std::pair<std::string, std::string>& x): Parameters(x) {}
 
-		explicit UrlParameters(const std::map<std::string, std::string>& x)
-			: Parameters(x) {}
+		UrlParameters(const std::map<std::string, std::string>& x): Parameters(x) {}
 
 		std::string get_string() {
 			if (str_.empty()) {
@@ -155,19 +149,15 @@ namespace easyhttp {
 
 		Headers() : Parameters() {}
 
-		explicit Headers(std::initializer_list<std::pair<std::string, std::string>> list)
-			: Parameters(list) {}
+		Headers(std::initializer_list<std::pair<std::string, std::string>> list): Parameters(list) {}
 
-		explicit Headers(const std::pair<std::string, std::string>& x)
-			: Parameters(x) {}
+		Headers(const std::pair<std::string, std::string>& x): Parameters(x) {}
 
-		explicit Headers(const std::map<std::string, std::string>& x)
-			: Parameters(x) {}
+		Headers(const std::map<std::string, std::string>& x): Parameters(x) {}
 
 		std::string encode(const std::string key) {
 			return (items_.find(key) == items_.end()) ? "" : key + ": " + items_[key];
 		}
-
 	};
 
 	struct RequestConfig {
@@ -179,7 +169,6 @@ namespace easyhttp {
 	};
 
 	namespace{
-
 		size_t http_request_impl_response_write(char* ptr, size_t size, size_t numb, void* ud) {
 			size_t response_size = size * numb;
 			std::stringstream* ss = (std::stringstream*)ud;

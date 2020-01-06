@@ -194,7 +194,9 @@ TEST_CASE("Making HTTP requests") {
 
 	SECTION("Testing basic POST request") {
 		RequestConfig r = { "http://postman-echo.com/post", UrlParameters(),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
-		RequestResponse resp = b.post(r);
+		auto t = RequestConfig{ "http://postman-echo.com/post?val=1", {{"param1","param2"}}, {},{}, std::chrono::seconds(1) };
+
+		RequestResponse resp = b.post(t);
 
 		REQUIRE(resp.status == "200");
 	}
