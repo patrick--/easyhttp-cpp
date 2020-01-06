@@ -173,16 +173,6 @@ TEST_CASE("Testing headers") {
 		h.add({ "key1", "value1" });
 		REQUIRE(h.encode("key1") == "key1: value1");
 	}
-
-	SECTION("Making POST request with custom headers") {
-		h.add({ "key1", "value1" });
-		RequestConfig r = { "http://postman-echo.com/post?val=1", UrlParameters(),h , BasicAuthentication(),  std::chrono::seconds(1) };
-		RequestResponse resp = b.post(r);
-	
-		REQUIRE(resp.status == "200");
-		REQUIRE(str_in_response(resp.body, "key1") == true);
-		REQUIRE(str_in_response(resp.body, "value1") == true);
-	}
 }
 
 TEST_CASE("Making HTTP requests") {
@@ -194,9 +184,7 @@ TEST_CASE("Making HTTP requests") {
 
 	SECTION("Testing basic POST request") {
 		RequestConfig r = { "http://postman-echo.com/post", UrlParameters(),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
-		auto t = RequestConfig{ "http://postman-echo.com/post?val=1", {{"param1","param2"}}, {},{}, std::chrono::seconds(1) };
-
-		RequestResponse resp = b.post(t);
+		RequestResponse resp = b.post(r);
 
 		REQUIRE(resp.status == "200");
 	}
@@ -220,6 +208,26 @@ TEST_CASE("Making HTTP requests") {
 		RequestResponse resp = b.get(r);
 
 		REQUIRE(resp.status == "200");
+	}
+
+	SECTION("Making POST request with custom headers") {
+		h.add({ "key1", "value1" });
+		RequestConfig r = { "http://postman-echo.com/post", UrlParameters(),h , BasicAuthentication(),  std::chrono::seconds(1) };
+		RequestResponse resp = b.post(r);
+
+		REQUIRE(resp.status == "200");
+		REQUIRE(str_in_response(resp.body, "key1") == true);
+		REQUIRE(str_in_response(resp.body, "value1") == true);
+	}
+
+	SECTION("Making GET request with custom headers") {
+		h.add({ "key1", "value1" });
+		RequestConfig r = { "http://postman-echo.com/get", UrlParameters(),h , BasicAuthentication(),  std::chrono::seconds(1) };
+		RequestResponse resp = b.get(r);
+
+		REQUIRE(resp.status == "200");
+		REQUIRE(str_in_response(resp.body, "key1") == true);
+		REQUIRE(str_in_response(resp.body, "value1") == true);
 	}
 
 	SECTION("Testing GET request that returns 404") {
