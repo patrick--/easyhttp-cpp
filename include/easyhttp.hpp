@@ -16,10 +16,10 @@ namespace easyhttp {
 		std::string password;
 	};
 
-	struct HttpResponse {
+	struct RequestResponse {
 		RequestError error;
-		std::string response_code;
-		std::string content;
+		std::string status;
+		std::string body;
 	};
 
 	class Parameters {
@@ -191,19 +191,19 @@ namespace easyhttp {
 	class Request {
 	public:
 
-		HttpResponse post(RequestConfig& c) {
-			HttpResponse resp = http_request_impl(HttpRequestType::post, c);
+		RequestResponse post(RequestConfig& c) {
+			RequestResponse resp = http_request_impl(HttpRequestType::post, c);
 			return resp;
 		}
 
-		HttpResponse get(RequestConfig& c) {
-			HttpResponse resp = http_request_impl(HttpRequestType::get, c);
+		RequestResponse get(RequestConfig& c) {
+			RequestResponse resp = http_request_impl(HttpRequestType::get, c);
 			return resp;
 		}
 
 	private:
 
-		HttpResponse http_request_impl(const HttpRequestType r, RequestConfig& c) {
+		RequestResponse http_request_impl(const HttpRequestType r, RequestConfig& c) {
 
 			CURL* curl;
 			struct curl_slist* chunk = NULL;
@@ -211,7 +211,7 @@ namespace easyhttp {
 			curl = curl_easy_init();
 
 			std::stringstream response_stream;
-			HttpResponse resp;
+			RequestResponse resp;
 
 			curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, static_cast<long>(c.timeout_sec.count()));
 			curl_easy_setopt(curl, CURLOPT_URL, (c.url + c.params.get_encoded_string()).c_str());
@@ -253,21 +253,21 @@ namespace easyhttp {
 			curl_slist_free_all(chunk);
 
 			if (res == CURLE_OK) {
-				resp.content = response_stream.str();
+				resp.body = response_stream.str();
 				resp.error = RequestError::none;
-				resp.response_code = std::to_string(http_code);
+				resp.status = std::to_string(http_code);
 			}
 
 			else if (res == CURLE_OPERATION_TIMEDOUT) {
-				resp.content = "Operation timed out.";
+				resp.body = "Operation timed out.";
 				resp.error = RequestError::timeout;
-				resp.response_code = "-1";
+				resp.status = "-1";
 			}
 
 			else {
-				resp.content = "Request encountered error: " + std::string(curl_easy_strerror(res));
+				resp.body = "Request encountered error: " + std::string(curl_easy_strerror(res));
 				resp.error = RequestError::error_misc;
-				resp.response_code = "-1";
+				resp.status = "-1";
 			}
 			
 			return resp;
