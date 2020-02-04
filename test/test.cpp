@@ -34,7 +34,6 @@ TEST_CASE("Testing Parameters returns size") {
 	}
 }
 
-
 TEST_CASE("Testing Parameters constructing with initilization lists") {
 	Parameters h;
 

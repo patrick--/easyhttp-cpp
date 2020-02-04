@@ -185,10 +185,35 @@ namespace easyhttp {
 			return resp;
 		}
 
+		RequestResponse post(const std::string& url) {
+			RequestConfig c = { url, {}, {}, {}, std::chrono::seconds(2)};
+			RequestResponse resp = http_request_impl(HttpRequestType::post, c);
+			return resp;
+		}
+
 		RequestResponse get(RequestConfig& c) {
 			RequestResponse resp = http_request_impl(HttpRequestType::get, c);
 			return resp;
 		}
+
+		RequestResponse get(const std::string& url) {
+			RequestConfig c = { url, {}, {}, {}, std::chrono::seconds(2) };
+			RequestResponse resp = http_request_impl(HttpRequestType::get, c);
+			return resp;
+		}
+
+		RequestResponse get(const std::string& url, UrlParameters params) {
+			RequestConfig c = { url, params, {}, {}, std::chrono::seconds(2) };
+			RequestResponse resp = http_request_impl(HttpRequestType::get, c);
+			return resp;
+		}
+
+		RequestResponse get(const std::string& url, UrlParameters params, Headers h) {
+			RequestConfig c = { url, params, h, {}, std::chrono::seconds(2) };
+			RequestResponse resp = http_request_impl(HttpRequestType::get, c);
+			return resp;
+		}
+
 
 	private:
 
