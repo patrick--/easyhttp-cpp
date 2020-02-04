@@ -128,7 +128,7 @@ namespace easyhttp {
 
 	private:
 	
-		std::string url_escape_str(std::string& orig) {
+		std::string url_escape_str(const std::string& orig) {
 
 			// Think about a possible try catch here
 			// Technically, std::strings ctor can throw

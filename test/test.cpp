@@ -247,7 +247,7 @@ TEST_CASE("Making HTTP requests") {
 	}
 
 	SECTION("Testing GET request that times out") {
-		RequestConfig r = { "http://google.com:8181", {}, {}, {}, std::chrono::seconds(2)
+		RequestConfig r = { "http://google.com:8181", {}, {}, {}, std::chrono::seconds(3)
 	};
 		RequestResponse resp = b.get(r);
 
@@ -257,7 +257,7 @@ TEST_CASE("Making HTTP requests") {
 	}
 
 	SECTION("Testing POST request that times out") {
-		RequestConfig r = { "http://google.com:8181", {}, {}, {}, std::chrono::seconds(2)
+		RequestConfig r = { "http://google.com:8181", {}, {}, {}, std::chrono::seconds(3)
 	};
 		RequestResponse resp = b.post(r);
 
