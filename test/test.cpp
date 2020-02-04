@@ -182,28 +182,30 @@ TEST_CASE("Making HTTP requests") {
 	Request b = Request();
 
 	SECTION("Testing basic POST request") {
-		RequestConfig r = { "http://postman-echo.com/post", UrlParameters(),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+		// Implicit object paramaters in RequestConfig
+		RequestConfig r = { "http://postman-echo.com/post",{}, {}, {}, std::chrono::seconds(1) };
 		RequestResponse resp = b.post(r);
 
 		REQUIRE(resp.status == "200");
 	}
 
 	SECTION("Testing basic GET request") {
-		RequestConfig r = { "http://postman-echo.com/get", UrlParameters(),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+		// Explit named object paramaters within RequestConfig
+		RequestConfig r = { "http://postman-echo.com/get", UrlParameters(),Headers(), BasicAuthentication(), std::chrono::seconds(1) };
 		RequestResponse resp = b.get(r);
 		
 		REQUIRE(resp.status == "200");
 	}
 
 	SECTION("Testing POST request with URL parameters") {
-		RequestConfig r = { "http://postman-echo.com/post", UrlParameters({{"foo","bar"}}),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+		RequestConfig r = { "http://postman-echo.com/post", {{"foo","bar"}}, {}, {}, std::chrono::seconds(1) };
 		RequestResponse resp = b.post(r);
 
 		REQUIRE(resp.status == "200");
 	}
 
 	SECTION("Testing GET request with URL parameters") {
-		RequestConfig r = { "http://postman-echo.com/get", UrlParameters({{"foo","bar"}}),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+		RequestConfig r = { "http://postman-echo.com/get", {{"foo","bar"}}, {}, {}, std::chrono::seconds(1)};
 		RequestResponse resp = b.get(r);
 
 		REQUIRE(resp.status == "200");
@@ -211,7 +213,7 @@ TEST_CASE("Making HTTP requests") {
 
 	SECTION("Making POST request with custom headers") {
 		h.add({ "key1", "value1" });
-		RequestConfig r = { "http://postman-echo.com/post", UrlParameters(),h , BasicAuthentication(),  std::chrono::seconds(1) };
+		RequestConfig r = { "http://postman-echo.com/post", {}, h, {}, std::chrono::seconds(1)};
 		RequestResponse resp = b.post(r);
 
 		REQUIRE(resp.status == "200");
@@ -221,7 +223,7 @@ TEST_CASE("Making HTTP requests") {
 
 	SECTION("Making GET request with custom headers") {
 		h.add({ "key1", "value1" });
-		RequestConfig r = { "http://postman-echo.com/get", UrlParameters(),h , BasicAuthentication(),  std::chrono::seconds(1) };
+		RequestConfig r = { "http://postman-echo.com/get",{} ,h , {},  std::chrono::seconds(1) };
 		RequestResponse resp = b.get(r);
 
 		REQUIRE(resp.status == "200");
@@ -230,21 +232,23 @@ TEST_CASE("Making HTTP requests") {
 	}
 
 	SECTION("Testing GET request that returns 404") {
-		RequestConfig r = { "http://postman-echo.com/doesntexist", UrlParameters({{}}),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+		RequestConfig r = { "http://postman-echo.com/doesntexist",{}, {}, {}, std::chrono::seconds(1)
+	};
 		RequestResponse resp = b.get(r);
 
 		REQUIRE(resp.status == "404");
 	}
 
 	SECTION("Testing POST request that returns 404") {
-		RequestConfig r = { "http://postman-echo.com/doesntexist", UrlParameters({{}}),Headers(), BasicAuthentication(),  std::chrono::seconds(1) };
+		RequestConfig r = { "http://postman-echo.com/doesntexist", {}, {}, {}, std::chrono::seconds(1)};
 		RequestResponse resp = b.post(r);
 
 		REQUIRE(resp.status == "404");
 	}
 
 	SECTION("Testing GET request that times out") {
-		RequestConfig r = { "http://google.com:8181", UrlParameters({{}}),Headers(), BasicAuthentication(),  std::chrono::seconds(2) };
+		RequestConfig r = { "http://google.com:8181", {}, {}, {}, std::chrono::seconds(2)
+	};
 		RequestResponse resp = b.get(r);
 
 		REQUIRE(resp.error == RequestError::timeout);
@@ -253,7 +257,8 @@ TEST_CASE("Making HTTP requests") {
 	}
 
 	SECTION("Testing POST request that times out") {
-		RequestConfig r = { "http://google.com:8181", UrlParameters({{}}),Headers(), BasicAuthentication(),  std::chrono::seconds(2) };
+		RequestConfig r = { "http://google.com:8181", {}, {}, {}, std::chrono::seconds(2)
+	};
 		RequestResponse resp = b.post(r);
 
 		REQUIRE(resp.error == RequestError::timeout);
