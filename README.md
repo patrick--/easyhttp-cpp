@@ -1,9 +1,9 @@
 # easyhttp-cpp
 
 ### Overview
-The goal of this library was to have a minimal CURL wrapper implementation that allowed users to make HTTP requests through configurable and reusable objects. These configurable requests could be individual HTTP calls that are responsible for interacting with different external RESTful API endpoints and services. 
+The goal of this library was to have a minimal CURL wrapper implementation that allowed users to make HTTP requests through configurable and reusable objects. These configurable requests could be individual HTTP calls that are responsible for interacting with different external RESTful API endpoints or services. 
 
-Also, basing it on CURL makes it really lightweight and fairly straghtforward to extend and modify. 
+Additionally, basing it on CURL makes keeps it lightweight and fairly straghtforward to extend or modify. 
 
 ---
 
@@ -40,7 +40,7 @@ Also, basing it on CURL makes it really lightweight and fairly straghtforward to
 
 Getting started is as easy as including `easyhttp.hpp` in your source file.
 
-You probably want to create a `RequestConfig` object to store all relevant settings for your particualr HTTP request:
+You probably want to create a `RequestConfig` object to store all relevant settings for your particular HTTP request:
 
 ```cpp
 struct RequestConfig {
@@ -51,10 +51,6 @@ struct RequestConfig {
   std::chrono::seconds timeout_sec;
 };
   ```
-  
-  You can create a `RequestConfig` object with explicit parameters:
-  
-
 
 #### Making a basic `GET` request
 
@@ -67,7 +63,7 @@ RequestResponse resp = req.get(config);
 std::cout << "Status: " << resp.status << " Content: " << resp.content << "\n";
 ```
 
-Implict `RequestConfig` object with no settings besides timeout and URL and timeout of 3 seconds
+Implict `RequestConfig` object with no settings besides URL and timeout of 3 seconds
 
 ```cpp
 Request req = Request();
