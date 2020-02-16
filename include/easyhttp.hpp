@@ -39,7 +39,7 @@ namespace easyhttp {
 			items_[x.first] = x.second;
 		}
 
-		Parameters(const std::map<std::string, std::string> x) : items_{ x } {}
+		Parameters(const std::map<std::string, std::string>& x) : items_{ x } {}
 
 		void add(std::pair<std::string, std::string> p) {
 			if (!p.first.empty()) {
@@ -155,7 +155,7 @@ namespace easyhttp {
 
 		Headers(const std::map<std::string, std::string>& x): Parameters(x) {}
 
-		std::string encode(const std::string key) {
+		std::string encode(const std::string& key) {
 			return (items_.find(key) == items_.end()) ? "" : key + ": " + items_[key];
 		}
 	};
