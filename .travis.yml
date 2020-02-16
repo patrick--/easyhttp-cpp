@@ -15,4 +15,4 @@ install:
 script:
   - make
   - ./test/TestAll
-  - cppcheck src --error-exitcode=1 ../include
+  - cppcheck --error-exitcode=1 --enable=performance ../test -I ../include
