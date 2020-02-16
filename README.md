@@ -1,5 +1,7 @@
 # easyhttp-cpp
 
+[![Build Status](https://travis-ci.com/patrick--/easyhttp-cpp.svg?branch=master)](https://travis-ci.com/patrick--/easyhttp-cpp)
+
 ### Overview
 The goal of this library was to have a minimal CURL wrapper implementation that allowed users to make HTTP requests through configurable and reusable objects. These configurable requests could be individual HTTP calls that are responsible for interacting with different external RESTful API endpoints or services. 
 
