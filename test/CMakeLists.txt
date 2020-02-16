@@ -5,11 +5,10 @@ FetchContent_Declare(
   GIT_REPOSITORY "https://github.com/catchorg/Catch2"
   )
 
-#FetchContent_MakeAvailable(Catch2)
 FetchContent_GetProperties(Catch2)
 if(NOT Catch2_POPULATED)
   FetchContent_Populate(Catch2)
-  add_subdirectory(${Catch2_SOURCE_DIR} ${Catch2_BINARY_DIR})
+  add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR})
 endif()
 
 find_package(CURL REQUIRED)
